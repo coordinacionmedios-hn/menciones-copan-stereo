@@ -457,7 +457,7 @@ const tbodyL = document.getElementById("filas-lrdr");
 lrdr.forEach((m, idx) => {
   const tr = document.createElement("tr");
   tr.id = "fila-lrdr-" + idx;
-  tr.className = "atardecer";
+  tr.className = "lrdr-row";
   const tdH = document.createElement("td"); tdH.className="hora"; tdH.textContent=m.hora;
   const tdC = document.createElement("td"); tdC.className="cliente"; tdC.textContent=m.cliente;
   tdC.onclick = () => abrirModal(m.cliente);
