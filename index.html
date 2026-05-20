@@ -229,14 +229,7 @@
         box-sizing: border-box;
       }
       .label-vivo { font-size: 0.75rem; color: #1a7a1a; font-weight: bold; margin-right: 12px; text-transform: uppercase; }
-      #song-title { font-size: 0.75rem; color: #333; font-weight: 600; flex: 1; line-height: 1.2; word-break: break-word; display: flex; align-items: center; }
-  
-  
-    10% { transform: translateX(0); }
-    90% { transform: translateX(-100%); }
-    100% { transform: translateX(-100%); }
-  }
-  #song-display { display: inline-block; }
+      #song-title { font-size: 0.9rem; color: #333; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
     
   .status-dot {
     height: 8px;
@@ -263,9 +256,9 @@
 
 <div id="widget-vivo">
   <div class="label-vivo">🎵 EN VIVO:</div>
-  
-  <div id="song-title"><span id="dot" class="status-dot"></span><span id="song-display">Sincronizando...</span></div>
-    </div>
+  <div id="song-title">
+    <span id="dot" class="status-dot"></span>
+    <span id="song-display">Sincronizando...</span>
   </div>
 </div>
 
@@ -671,40 +664,37 @@ setInterval(actualizar, 30000);
     async function getSong() {
       const display = document.getElementById('song-display');
       const dot = document.getElementById('dot');
-      const ts = new Date().getTime();
       
-      // 1. INTENTO LOCAL (NGROK)
+      // 1. INTENTO LOCAL (Instante) - Usamos el query param para evitar el error de ngrok
       try {
-        const r = await fetch('https://audience-headache-acetone.ngrok-free.dev/?action=playbackinfo&ngrok-skip-browser-warning=1', {
-            headers: { 'ngrok-skip-browser-warning': '1' }
-        });
+        const r = await fetch('https://audience-headache-acetone.ngrok-free.dev/?action=playbackinfo&ngrok-skip-browser-warning=1');
         const t = await r.text();
         const xml = new DOMParser().parseFromString(t, "text/xml");
         const trk = xml.querySelector('CurrentTrack TRACK');
         if(trk) {
           const a = (trk.getAttribute('ARTIST') || '').trim();
-          const title = (trk.getAttribute('TITLE') || '').trim();
+          const t = (trk.getAttribute('TITLE') || '').trim();
           const c = (trk.getAttribute('CASTTITLE') || '').trim();
-          const song = (a && title) ? (a + ' - ' + title) : (c || 'Copán Stereo 96.3 FM');
-          document.getElementById('song-display').textContent = song;
+          const song = (a && t) ? (a + ' - ' + t) : (c || 'Copán Stereo 96.3 FM');
+          
+          display.textContent = song;
           dot.className = 'status-dot dot-local';
           return;
         }
-      } catch(e) {}
+      } catch(e) { console.log("Local no disponible"); }
 
-      // 2. INTENTO CLOUD (GITHUB RAW)
+      // 2. INTENTO GITHUB (Respaldo)
       try {
-        const rG = await fetch('https://raw.githubusercontent.com/coordinacionmedios-hn/menciones-copan-stereo/main/index.html?v=' + ts);
-        const hG = await rG.text();
-        const match = hG.match(/<div id="song-title">.*?<span id="song-display">(.*?)<\/span>/s);
+        const v = new Date().getTime();
+        const r = await fetch('https://raw.githubusercontent.com/coordinacionmedios-hn/menciones-copan-stereo/main/index.html?v=' + v);
+        const txt = await r.text();
+        // Buscamos el contenido dentro de song-display
+        const match = txt.match(/<span id="song-display">(.*?)<\/span>/);
         if(match && match[1]) {
-          const songG = match[1].trim();
-          if(songG !== 'Sincronizando...') {
-            display.textContent = songG;
-            dot.className = 'status-dot dot-cloud';
-          }
+          display.textContent = match[1].trim();
+          dot.className = 'status-dot dot-cloud';
         }
-      } catch(eG) {}
+      } catch(e) {}
     }
     getSong();
     setInterval(getSong, 5000);
@@ -713,10 +703,6 @@ setInterval(actualizar, 30000);
     </script>
     </body>
 </html>
-
-
-
-
 
 
 
