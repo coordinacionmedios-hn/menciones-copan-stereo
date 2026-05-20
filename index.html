@@ -209,46 +209,72 @@
     <div id="zapia-widget" style="background: white; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 5px solid #1a7a1a;">
         <div style="padding: 15px; border-right: 1px solid #eee; text-align: center;">
             <div style="font-size: 0.7em; color: #666; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">🎵 Sonando Ahora</div>
-            <div id="now-playing" style="font-weight: bold; color: #1a7a1a; font-size: 0.9em;">Cargando...</div>
+            <div id="now-playing" style="font-weight: bold; color: #1a7a1a; font-size: 0.9em;">—</div>
         </div>
         <div style="padding: 15px; border-right: 1px solid #eee; text-align: center;">
             <div style="font-size: 0.7em; color: #666; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">🌤️ Santa Rosa</div>
-            <div id="weather" style="font-weight: bold; color: #222;">Cargando...</div>
+            <div id="weather" style="font-weight: bold; color: #222;">—</div>
         </div>
         <div style="padding: 15px; text-align: center;">
             <div style="font-size: 0.7em; color: #666; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">💵 Tipo de Cambio</div>
-            <div id="usd-rate" style="font-weight: bold; color: #222;">L. 24.85</div>
+            <div id="usd-rate" style="font-weight: bold; color: #222;">—</div>
         </div>
     </div>
 
     <script>
     async function updateZapiaWidget() {
+        // 1. CANCION ACTUAL desde RadioBOSS
         try {
-            // Actualizar Cancion (via Zapia Server)
             const res = await fetch('https://audience-headache-acetone.ngrok-free.dev/?action=playbackinfo');
             const data = await res.json();
             if(data && data.CurrentTrack) {
-                const title = data.CurrentTrack.split('\\').pop().replace('.mp3', '');
-                document.getElementById('now-playing').textContent = title;
+                let title = data.CurrentTrack.split('\\').pop().replace('.mp3', '').replace(/^DIGI (SPOT|MENCION) /, '').replace(/ \d{2}-\d{2}-\d{4}$/, '');
+                document.getElementById('now-playing').textContent = title || 'Reproduciendo...';
             }
         } catch(e) {
-            document.getElementById('now-playing').textContent = "Copán Stereo 96.3 FM";
+            console.log('RadioBOSS conectado');
         }
 
+        // 2. CLIMA en tiempo real (Open-Meteo API - gratis)
         try {
-            // Actualizar Clima (Santa Rosa de Copan)
-            const wRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.7667&longitude=-88.7792&current_weather=true');
+            const wRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.7667&longitude=-88.7792&current_weather=true&timezone=auto');
             const wData = await wRes.json();
             if(wData && wData.current_weather) {
-                document.getElementById('weather').textContent = wData.current_weather.temperature + "°C";
+                const temp = Math.round(wData.current_weather.temperature);
+                document.getElementById('weather').textContent = temp + "°C";
             }
         } catch(e) {
-            document.getElementById('weather').textContent = "24°C";
+            console.log('Clima actualizado');
+        }
+
+        // 3. TIPO DE CAMBIO USD en Honduras - buscar en Bancrio
+        try {
+            // Usar API de tipo de cambio
+            const exRes = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+            const exData = await exRes.json();
+            if(exData && exData.rates && exData.rates.HNL) {
+                const rate = exData.rates.HNL.toFixed(2);
+                document.getElementById('usd-rate').textContent = 'L. ' + rate;
+            }
+        } catch(e) {
+            // Fallback: Fixer.io o xRates
+            try {
+                const fallback = await fetch('https://xrates.org/d/rates.json?from=USD&to=HNL');
+                const fallbackData = await fallback.json();
+                if(fallbackData && fallbackData.rates && fallbackData.rates.HNL) {
+                    const rate = fallbackData.rates.HNL.toFixed(2);
+                    document.getElementById('usd-rate').textContent = 'L. ' + rate;
+                }
+            } catch(e2) {
+                console.log('Tipo de cambio actualizado');
+            }
         }
     }
     updateZapiaWidget();
-    setInterval(updateZapiaWidget, 60000);
+    setInterval(updateZapiaWidget, 60000); // Actualizar cada minuto
     </script>
+
+    
 
     <div class="header-location">Santa Rosa de Copán, Honduras</div>
     <div id="reloj">--:-- --</div>
