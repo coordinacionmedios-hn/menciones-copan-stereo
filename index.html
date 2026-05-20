@@ -206,8 +206,35 @@
   <div class="header-center">
     <h1>📻 HORARIO DE MENCIONES — COPÁN STEREO 96.3 FM</h1>
     <!-- WIDGET ZAPIA: SONANDO AHORA (AUTO-UPDATE) -->
-    <div id="zapia-now-playing" style="text-align: center; margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <div id="zapia-now-playing" style="text-align: center; margin: 20px 0; padding: 15px; background: white; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
         <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 5px;">🎵 Sonando Ahora</div>
+        <div id="live-song-title" style="font-size: 0.95rem; color: #1a7a1a; font-weight: bold;">Copán Stereo 96.3 FM</div>
+    </div>
+
+    <script>
+    async function refreshSong() {
+        try {
+            const res = await fetch('https://audience-headache-acetone.ngrok-free.dev/?action=playbackinfo');
+            const text = await res.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(text, "text/xml");
+            const track = xmlDoc.querySelector('CurrentTrack TRACK');
+            if(track) {
+                const artist = track.getAttribute('ARTIST') || '';
+                const title = track.getAttribute('TITLE') || '';
+                const display = artist && title ? artist + ' - ' + title : 'Copán Stereo 96.3 FM';
+                const el = document.getElementById('live-song-title');
+                if (el && el.textContent !== display) {
+                    el.textContent = display;
+                }
+            }
+        } catch(e) {}
+    }
+    setInterval(refreshSong, 5000);
+    </script>
+
+    
+    
         <div id="live-song-title" style="font-size: 1.15rem; color: #1a7a1a; font-weight: bold;">KAROL G - PROVENZA</div>
     </div>
 
