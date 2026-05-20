@@ -653,19 +653,32 @@ setInterval(actualizar, 30000);
     <script>
     async function getSong() {
       try {
-        const r = await fetch('https://audience-headache-acetone.ngrok-free.dev/?action=playbackinfo&ngrok-skip-browser-warning=true');
+        const r = await fetch('https://audience-headache-acetone.ngrok-free.dev/?action=playbackinfo&ngrok-skip-browser-warning=69420');
         const t = await r.text();
         const xml = new DOMParser().parseFromString(t, "text/xml");
         const trk = xml.querySelector('CurrentTrack TRACK');
         if(trk) {
-          const a = trk.getAttribute('ARTIST') || '', t = trk.getAttribute('TITLE') || '', c = trk.getAttribute('CASTTITLE') || '';
-          document.getElementById('song-title').textContent = (a && t) ? (a + ' - ' + t) : (c || 'Copán Stereo 96.3 FM');
+          const artist = (trk.getAttribute('ARTIST') || '').trim();
+          const title = (trk.getAttribute('TITLE') || '').trim();
+          const castTitle = (trk.getAttribute('CASTTITLE') || '').trim();
+          let displayText = 'Copán Stereo 96.3 FM';
+          
+          if(artist && title) {
+            displayText = artist + ' - ' + title;
+          } else if(castTitle) {
+            displayText = castTitle;
+          }
+          
+          document.getElementById('song-title').textContent = displayText;
         }
-      } catch(e) {}
+      } catch(e) {
+        console.log('Error fetching song:', e);
+      }
     }
     setInterval(getSong, 5000);
     getSong();
     </script>
     </body>
 </html>
+
 
