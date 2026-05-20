@@ -645,31 +645,48 @@ setInterval(actualizar, 30000);
     <script>
     
     async function getSong() {
+      const display = document.getElementById('song-title');
+      
+      // Intento 1: Servidor Local (INSTANTÁNEO)
       try {
-        const t = new Date().getTime();
-        // Cargamos el propio index.html con un parámetro aleatorio para obligar al navegador a ver la versión de GitHub
-        const response = await fetch(window.location.href.split('?')[0] + '?v=' + t);
-        const text = await response.text();
-        
-        // Extraemos lo que está en el div song-title del HTML que acabamos de bajar
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        const newSong = doc.getElementById('song-title').textContent.trim();
-        
-        if (newSong && newSong !== 'Sincronizando...') {
-            document.getElementById('song-title').textContent = newSong;
+        const r = await fetch('https://audience-headache-acetone.ngrok-free.dev/?action=playbackinfo&ngrok-skip-browser-warning=69420');
+        const t = await r.text();
+        const xml = new DOMParser().parseFromString(t, "text/xml");
+        const trk = xml.querySelector('CurrentTrack TRACK');
+        if(trk) {
+          const a = (trk.getAttribute('ARTIST') || '').trim();
+          const t = (trk.getAttribute('TITLE') || '').trim();
+          const c = (trk.getAttribute('CASTTITLE') || '').trim();
+          const song = (a && t) ? (a + ' - ' + t) : (c || 'Copán Stereo 96.3 FM');
+          if(song && song !== display.textContent) {
+            display.textContent = song;
+            return; 
+          }
         }
       } catch(e) {
-        console.error('Error actualizando:', e);
+        // Si falla el local, intentamos GitHub como respaldo
+        try {
+          const v = new Date().getTime();
+          const rG = await fetch(window.location.href.split('?')[0] + '?v=' + v);
+          const hG = await rG.text();
+          const match = hG.match(/<div id="song-title">(.*?)<\/div>/);
+          if (match && match[1]) {
+              const newSong = match[1].trim();
+              if (newSong !== display.textContent && newSong !== 'Sincronizando...') {
+                  display.textContent = newSong;
+              }
+          }
+        } catch(eG) {}
       }
     }
     getSong();
-    setInterval(getSong, 5000);
+    setInterval(getSong, 4000);
 
     getSong();
     </script>
     </body>
 </html>
+
 
 
 
