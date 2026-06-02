@@ -539,7 +539,7 @@ const activas = [
   { hora:"9:55 AM",  min:9*60+55,  cliente:"Asados La Entrada",  vence:"13/06/2026", turno:"manana" },
   { hora:"10:15 AM", min:10*60+15, cliente:"Subway",             vence:"Indefinido",  turno:"manana" },
   { hora:"10:25 AM",  min:625,  cliente:"UNITEC",             vence:"30/06/2026",  turno:"manana" },
-  { hora:"11:40 AM",  min:700,  cliente:"UNITEC",             vence:"30/06/2026",  turno:"manana", bg:"amarillo" },
+  { hora:"11:40 AM",  min:700,  cliente:"UNITEC",             vence:"30/06/2026",  turno:"mediodia", bg:"amarillo" },
   { hora:"12:05 PM", min:12*60+5,  cliente:"Espresso Americano", vence:"Indefinido",  turno:"mediodia", bg:"amarillo" },
   { hora:"12:20 PM",  min:740,  cliente:"UNITEC",             vence:"30/06/2026",  turno:"mediodia", bg:"amarillo" },
   { hora:"12:40 PM", min:12*60+40, cliente:"Ferretería El Baratillo", vence:"Indefinido",  turno:"mediodia", bg:"amarillo" },
@@ -583,7 +583,7 @@ const tbody = document.getElementById("filas-activas");
 activas.forEach((m, idx) => {
   const tr = document.createElement("tr");
   tr.id = "fila-" + idx;
-  tr.className = m.turno;
+  tr.className = m.turno + (m.bg ? " " + m.bg : "");
 
   const tdH = document.createElement("td"); tdH.className="hora"; tdH.textContent=m.hora;
   const tdC = document.createElement("td"); tdC.className="cliente"; tdC.textContent=m.cliente;
@@ -732,6 +732,7 @@ setInterval(actualizar, 30000);
     </script>
     </body>
 </html>
+
 
 
 
