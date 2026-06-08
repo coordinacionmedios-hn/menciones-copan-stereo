@@ -242,6 +242,8 @@
   .dot-local { background-color: #28a745; box-shadow: 0 0 5px #28a745; }
   .dot-cloud { background-color: #007bff; box-shadow: 0 0 5px #007bff; }
 .amarillo { background-color: #FFFF00 !important; color: #000 !important; }
+.bg-azul { background-color: #0070C0 !important; color: #fff !important; }
+.bg-verde { background-color: #00B050 !important; color: #fff !important; }
 </style>
 </head>
 <body>
@@ -305,6 +307,20 @@
 
 <script>
 const MENCIONES = {
+  "Lagos Joyeros": `Mención en Vivo
+Lagos Joyeros — Especial de Junio
+
+¿Buscás ese detalle que hable por vos? En Lagos Joyeros, creemos que los momentos más importantes merecen brillar para siempre. 
+
+Y este mes de junio, ¡queremos que brilles más que nunca! Visítanos en nuestra tienda en Mall Uniplaza, Santa Rosa de Copán, y sorprendete con nuestra joyería fina en oro para damas, caballeros y hasta para los más pequeñitos de la casa.
+
+¡Atención a esto! Durante todo el mes, aprovechá hasta un 40% DE DESCUENTO en toda la tienda. Sí, escuchaste bien, ¡40% de descuento para que te llevés esa prenda que tanto has soñado!
+
+¿No estás en Santa Rosa? ¡No hay problema! Durante todo junio, tenemos ENVÍOS GRATIS a todo el país. Comprá desde la comodidad de tu casa y nosotros te lo hacemos llegar sin costo adicional.
+
+Escribinos ya al WhatsApp: 9662-4951 o seguinos en Instagram como @lagos_joyeros_hn.
+
+Lagos Joyeros... ¡Donde cada momento brilla!`,
   "Asados La Entrada": `Mención en Vivo
 Asados La Entrada
 
@@ -563,11 +579,13 @@ const activas = [
   { hora:"9:55 AM",  min:9*60+55,  cliente:"Asados La Entrada",  vence:"13/06/2026", turno:"manana" },
   { hora:"10:05 AM", min:605,   cliente:"Banco Cuscatlán",    vence:"30/06/2026", turno:"manana" },
   { hora:"10:15 AM", min:10*60+15, cliente:"Subway",             vence:"Indefinido",  turno:"manana" },
+  { hora:"10:20 AM", min:620,   cliente:"Lagos Joyeros",      vence:"30/06/2026", turno:"manana", bg:"bg-verde" },
   { hora:"10:25 AM",  min:625,  cliente:"UNITEC",             vence:"30/06/2026",  turno:"manana" },
   { hora:"10:45 AM", min:645,  cliente:"Banco Ficohsa",      vence:"30/06/2026",  turno:"manana" },
   { hora:"11:10 AM", min:670,   cliente:"Banco Cuscatlán",    vence:"30/06/2026", turno:"mediodia", bg:"amarillo" },
   { hora:"11:20 AM", min:680,  cliente:"COMPU+ DATOS",    vence:"30/06/2026",  turno:"mediodia", bg:"amarillo" },
   { hora:"11:40 AM",  min:700,  cliente:"UNITEC",             vence:"30/06/2026",  turno:"mediodia", bg:"amarillo" },
+  { hora:"11:50 AM", min:710,   cliente:"Lagos Joyeros",      vence:"30/06/2026", turno:"mediodia", bg:"bg-verde" },
   { hora:"12:05 PM", min:12*60+5,  cliente:"Espresso Americano", vence:"Indefinido",  turno:"mediodia", bg:"amarillo" },
   { hora:"12:20 PM",  min:740,  cliente:"UNITEC",             vence:"30/06/2026",  turno:"mediodia", bg:"amarillo" },
   { hora:"12:40 PM", min:12*60+40, cliente:"Ferretería El Baratillo", vence:"Indefinido",  turno:"mediodia", bg:"amarillo" },
@@ -586,6 +604,7 @@ const activas = [
   { hora:"3:35 PM",  min:15*60+35, cliente:"Espresso Americano", vence:"Indefinido",  turno:"tarde" },
   { hora:"3:45 PM",  min:945,  cliente:"Banco Ficohsa",      vence:"30/06/2026",  turno:"tarde" },
   { hora:"5:45 PM",  min:17*60+45, cliente:"Espresso Americano", vence:"Indefinido",  turno:"atardecer" },
+  { hora:"6:10 PM",  min:1090,  cliente:"Lagos Joyeros",      vence:"30/06/2026", turno:"noche", bg:"bg-verde" },
 ];
 
 const lrdr = [
@@ -762,6 +781,7 @@ setInterval(actualizar, 30000);
     </script>
     </body>
 </html>
+
 
 
 
